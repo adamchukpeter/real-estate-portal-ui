@@ -2,14 +2,19 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Bell, ChevronDown, Search, HardHat } from 'lucide-react'
+import { Search, HardHat } from 'lucide-react'
 import { useLang } from '@/lib/lang-context'
 import { SearchHub } from '@/components/search-hub'
+import { HeaderAuth } from '@/components/header-auth'
 import { cn } from '@/lib/utils'
 
 export function Header() {
   const { lang, setLang, t } = useLang()
   const [searchOpen, setSearchOpen] = useState(false)
+
+  // Dev-toggle state — only for Preview testing
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [hasPassword, setHasPassword] = useState(false)
 
   return (
     <>
@@ -44,6 +49,36 @@ export function Header() {
           </button>
 
           <div className="ml-auto flex items-center gap-2">
+            {/* Dev Toggles — subtle control panel for Preview */}
+            <div className="hidden items-center gap-1.5 rounded-md border border-dashed border-border bg-muted/40 px-2 py-1 text-[10px] text-muted-foreground sm:flex">
+              <span className="font-mono font-semibold text-muted-foreground/60 mr-0.5">DEV</span>
+              <label className="flex cursor-pointer items-center gap-1 select-none">
+                <input
+                  type="checkbox"
+                  checked={isLoggedIn}
+                  onChange={(e) => setIsLoggedIn(e.target.checked)}
+                  className="h-3 w-3 accent-graphite cursor-pointer"
+                />
+                <span>isLoggedIn</span>
+              </label>
+              <span className="text-border">|</span>
+              <label
+                className={cn(
+                  'flex cursor-pointer items-center gap-1 select-none transition-opacity',
+                  !isLoggedIn && 'pointer-events-none opacity-30',
+                )}
+              >
+                <input
+                  type="checkbox"
+                  checked={hasPassword}
+                  onChange={(e) => setHasPassword(e.target.checked)}
+                  disabled={!isLoggedIn}
+                  className="h-3 w-3 accent-graphite cursor-pointer"
+                />
+                <span>hasPassword</span>
+              </label>
+            </div>
+
             {/* Language switcher */}
             <div className="flex items-center rounded-md border border-border bg-secondary overflow-hidden text-sm font-medium">
               <button
@@ -70,21 +105,12 @@ export function Header() {
               </button>
             </div>
 
-            {/* Notifications */}
-            <button className="relative flex h-9 w-9 items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground transition-colors hover:text-foreground">
-              <Bell className="h-4 w-4" />
-              <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand" />
-              <span className="sr-only">{t('Powiadomienia', 'Уведомления')}</span>
-            </button>
-
-            {/* User avatar */}
-            <button className="flex items-center gap-2 rounded-md border border-border bg-secondary px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted">
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-xs font-bold text-brand-foreground">
-                A
-              </div>
-              <span className="hidden sm:inline">Anna K.</span>
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-            </button>
+            {/* Auth block — logged in / logged out */}
+            <HeaderAuth
+              isLoggedIn={isLoggedIn}
+              hasPassword={hasPassword}
+              onLogout={() => setIsLoggedIn(false)}
+            />
           </div>
         </div>
 
