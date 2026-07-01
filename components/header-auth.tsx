@@ -38,6 +38,8 @@ interface HeaderAuthProps {
   isLoggedIn: boolean
   hasPassword: boolean
   onLogout: () => void
+  /** Mobile compact mode: renders only bell + round avatar, no text or dropdown trigger width */
+  compact?: boolean
 }
 
 const NOTIFICATIONS = [
@@ -340,7 +342,7 @@ function SecurityModal({
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
-export function HeaderAuth({ isLoggedIn, hasPassword, onLogout }: HeaderAuthProps) {
+export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false }: HeaderAuthProps) {
   const { t } = useLang()
   const [securityOpen, setSecurityOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -358,7 +360,9 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout }: HeaderAuthProp
   }, [])
 
   // ── Logged out state ─────────────────────────────────────────────────────
+  // In compact mode the header renders the User icon itself; nothing to render here.
   if (!isLoggedIn) {
+    if (compact) return null
     return (
       <div className="flex items-center gap-2">
         <Link
@@ -377,7 +381,82 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout }: HeaderAuthProp
     )
   }
 
-  // ── Logged in state ──────────────────────────────────────────────────────
+  // ── Logged in — COMPACT (mobile) ─────────────────────────────────────────
+  // Bell + round avatar only; avatar opens the security modal directly.
+  if (compact) {
+    return (
+      <div className="flex items-center gap-2">
+        {mounted && (
+          <SecurityModal
+            open={securityOpen}
+            hasPassword={simHasPassword}
+            onClose={() => setSecurityOpen(false)}
+            onPasswordCreated={() => setSimHasPassword(true)}
+          />
+        )}
+
+        {/* Bell */}
+        <Popover>
+          <PopoverTrigger
+            className="relative flex h-9 w-9 items-center justify-center rounded-md border border-border bg-secondary text-muted-foreground transition-colors hover:text-foreground"
+            aria-label={t('Powiadomienia', 'Уведомления')}
+          >
+            <Bell className="h-4 w-4" />
+            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand" />
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-80 p-0">
+            <div className="flex items-center justify-between border-b border-border px-4 py-3">
+              <span className="text-sm font-semibold text-foreground">
+                {t('Powiadomienia', 'Уведомления')}
+              </span>
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-brand-foreground">
+                {NOTIFICATIONS.length}
+              </span>
+            </div>
+            <div className="divide-y divide-border">
+              {NOTIFICATIONS.map((n) => {
+                const Icon = BADGE_ICONS[n.type]
+                const isWebinar = n.type === 'webinar'
+                return (
+                  <div key={n.id} className={cn('space-y-2 px-4 py-3', isWebinar && 'bg-brand/5')}>
+                    <span
+                      className={cn(
+                        'inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
+                        BADGE_STYLES[n.type],
+                      )}
+                    >
+                      <Icon className="h-2.5 w-2.5" />
+                      {t(BADGE_LABELS[n.type].pl, BADGE_LABELS[n.type].ru)}
+                    </span>
+                    <p className="text-sm leading-snug text-foreground">{t(n.textPl, n.textRu)}</p>
+                    {isWebinar && (
+                      <Button
+                        size="sm"
+                        className="h-7 bg-brand px-3 text-xs text-brand-foreground hover:bg-brand/90"
+                      >
+                        {t('Dołącz', 'Присоединиться')}
+                      </Button>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        {/* Round avatar — opens security modal */}
+        <button
+          onClick={() => setSecurityOpen(true)}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-graphite text-sm font-bold text-graphite-foreground transition-opacity hover:opacity-80"
+          aria-label={t('Moje konto', 'Мой аккаунт')}
+        >
+          J
+        </button>
+      </div>
+    )
+  }
+
+  // ── Logged in — FULL (desktop) ───────────────────────────────────────────
   return (
     <div className="flex items-center gap-1.5">
       {/* Portal-mounted security modal */}
