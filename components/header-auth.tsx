@@ -81,6 +81,116 @@ const BADGE_LABELS: Record<string, { pl: string; ru: string }> = {
   webinar: { pl: 'Webinar', ru: 'Вебинар' },
 }
 
+// ─── Shared notifications panel content ───────────────────────────────────────
+function NotificationsPanel({
+  readIds,
+  onMarkRead,
+  onMarkAllRead,
+}: {
+  readIds: Set<number>
+  onMarkRead: (id: number) => void
+  onMarkAllRead: () => void
+}) {
+  const { t } = useLang()
+  const unreadCount = NOTIFICATIONS.filter((n) => !readIds.has(n.id)).length
+
+  return (
+    <div className="flex flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-foreground">
+            {t('Powiadomienia', 'Уведомления')}
+          </span>
+          {unreadCount > 0 && (
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-brand-foreground">
+              {unreadCount}
+            </span>
+          )}
+        </div>
+        {unreadCount > 0 && (
+          <button
+            onClick={onMarkAllRead}
+            className="text-xs font-medium text-muted-foreground transition-colors hover:text-brand"
+          >
+            {t('Oznacz jako przeczytane', 'Отметить все прочитанными')}
+          </button>
+        )}
+      </div>
+
+      {/* List */}
+      <div className="divide-y divide-border overflow-y-auto">
+        {NOTIFICATIONS.map((n) => {
+          const Icon = BADGE_ICONS[n.type]
+          const isWebinar = n.type === 'webinar'
+          const isRead = readIds.has(n.id)
+
+          return (
+            <div
+              key={n.id}
+              onClick={() => onMarkRead(n.id)}
+              className={cn(
+                'cursor-pointer space-y-2 px-4 py-3 transition-colors',
+                isRead
+                  ? 'bg-white'
+                  : isWebinar
+                  ? 'bg-amber-50/60'
+                  : 'bg-slate-50/70',
+                'hover:bg-muted/40',
+              )}
+            >
+              {/* Badge row + unread dot */}
+              <div className="flex items-center gap-2">
+                {!isRead && (
+                  <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-amber-500" />
+                )}
+                <span
+                  className={cn(
+                    'inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
+                    BADGE_STYLES[n.type],
+                  )}
+                >
+                  <Icon className="h-2.5 w-2.5" />
+                  {t(BADGE_LABELS[n.type].pl, BADGE_LABELS[n.type].ru)}
+                </span>
+              </div>
+
+              {/* Text */}
+              <p
+                className={cn(
+                  'text-sm leading-snug',
+                  isRead ? 'font-normal text-slate-500' : 'font-semibold text-slate-900',
+                )}
+              >
+                {t(n.textPl, n.textRu)}
+              </p>
+
+              {/* Webinar CTA */}
+              {isWebinar && (
+                <Button
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onMarkRead(n.id)
+                  }}
+                  className={cn(
+                    'h-7 px-3 text-xs',
+                    isRead
+                      ? 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      : 'bg-brand text-brand-foreground hover:bg-brand/90',
+                  )}
+                >
+                  {t('Dołącz', 'Присоединиться')}
+                </Button>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 // ─── Security Modal — rendered via portal into document.body ──────────────────
 function SecurityModal({
   open,
@@ -349,6 +459,12 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false 
   const [mounted, setMounted] = useState(false)
   // Simulates the live hasPassword state within this session (toggled by the modal)
   const [simHasPassword, setSimHasPassword] = useState(hasPassword)
+  // Tracks which notification IDs have been read
+  const [readIds, setReadIds] = useState<Set<number>>(new Set())
+
+  const markRead = (id: number) => setReadIds((prev) => new Set(prev).add(id))
+  const markAllRead = () => setReadIds(new Set(NOTIFICATIONS.map((n) => n.id)))
+  const unreadCount = NOTIFICATIONS.filter((n) => !readIds.has(n.id)).length
 
   // Keep in sync if the prop changes externally (e.g. DEV checkbox toggle)
   useEffect(() => {
@@ -402,45 +518,21 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false 
             aria-label={t('Powiadomienia', 'Уведомления')}
           >
             <Bell className="h-4 w-4" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand" />
+            {unreadCount > 0 && (
+              <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand" />
+            )}
           </PopoverTrigger>
-          <PopoverContent align="end" className="w-80 p-0">
-            <div className="flex items-center justify-between border-b border-border px-4 py-3">
-              <span className="text-sm font-semibold text-foreground">
-                {t('Powiadomienia', 'Уведомления')}
-              </span>
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-brand-foreground">
-                {NOTIFICATIONS.length}
-              </span>
-            </div>
-            <div className="divide-y divide-border">
-              {NOTIFICATIONS.map((n) => {
-                const Icon = BADGE_ICONS[n.type]
-                const isWebinar = n.type === 'webinar'
-                return (
-                  <div key={n.id} className={cn('space-y-2 px-4 py-3', isWebinar && 'bg-brand/5')}>
-                    <span
-                      className={cn(
-                        'inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
-                        BADGE_STYLES[n.type],
-                      )}
-                    >
-                      <Icon className="h-2.5 w-2.5" />
-                      {t(BADGE_LABELS[n.type].pl, BADGE_LABELS[n.type].ru)}
-                    </span>
-                    <p className="text-sm leading-snug text-foreground">{t(n.textPl, n.textRu)}</p>
-                    {isWebinar && (
-                      <Button
-                        size="sm"
-                        className="h-7 bg-brand px-3 text-xs text-brand-foreground hover:bg-brand/90"
-                      >
-                        {t('Dołącz', 'Присоединиться')}
-                      </Button>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
+          {/* Mobile: fixed card anchored below header, full viewport width minus margins */}
+          <PopoverContent
+            align="end"
+            sideOffset={8}
+            className="w-[calc(100vw-2rem)] max-h-[70vh] overflow-y-auto rounded-xl border border-border bg-card p-0 shadow-2xl md:w-80"
+          >
+            <NotificationsPanel
+              readIds={readIds}
+              onMarkRead={markRead}
+              onMarkAllRead={markAllRead}
+            />
           </PopoverContent>
         </Popover>
 
@@ -511,47 +603,16 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false 
           aria-label={t('Powiadomienia', 'Уведомления')}
         >
           <Bell className="h-4 w-4" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand" />
+          {unreadCount > 0 && (
+            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand" />
+          )}
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-80 p-0">
-          <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <span className="text-sm font-semibold text-foreground">
-              {t('Powiadomienia', 'Уведомления')}
-            </span>
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-brand-foreground">
-              {NOTIFICATIONS.length}
-            </span>
-          </div>
-          <div className="divide-y divide-border">
-            {NOTIFICATIONS.map((n) => {
-              const Icon = BADGE_ICONS[n.type]
-              const isWebinar = n.type === 'webinar'
-              return (
-                <div key={n.id} className={cn('space-y-2 px-4 py-3', isWebinar && 'bg-brand/5')}>
-                  <span
-                    className={cn(
-                      'inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
-                      BADGE_STYLES[n.type],
-                    )}
-                  >
-                    <Icon className="h-2.5 w-2.5" />
-                    {t(BADGE_LABELS[n.type].pl, BADGE_LABELS[n.type].ru)}
-                  </span>
-                  <p className="text-sm leading-snug text-foreground">
-                    {t(n.textPl, n.textRu)}
-                  </p>
-                  {isWebinar && (
-                    <Button
-                      size="sm"
-                      className="h-7 bg-brand px-3 text-xs text-brand-foreground hover:bg-brand/90"
-                    >
-                      {t('Dołącz', 'Присоединиться')}
-                    </Button>
-                  )}
-                </div>
-              )
-            })}
-          </div>
+        <PopoverContent align="end" className="w-80 max-h-[70vh] overflow-y-auto p-0">
+          <NotificationsPanel
+            readIds={readIds}
+            onMarkRead={markRead}
+            onMarkAllRead={markAllRead}
+          />
         </PopoverContent>
       </Popover>
 
