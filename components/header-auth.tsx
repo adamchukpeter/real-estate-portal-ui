@@ -84,15 +84,25 @@ function SecurityModal({
   open,
   hasPassword,
   onClose,
+  onPasswordCreated,
 }: {
   open: boolean
   hasPassword: boolean
   onClose: () => void
+  onPasswordCreated: () => void
 }) {
   const { t } = useLang()
-  const [showOld, setShowOld] = useState(false)
+  // 'info'   — no password yet, show warning + CTA
+  // 'create' — user clicked CTA, show 2-field creation form
+  const [step, setStep] = useState<'info' | 'create'>('info')
   const [showNew, setShowNew] = useState(false)
   const [showRepeat, setShowRepeat] = useState(false)
+  const [showOld, setShowOld] = useState(false)
+
+  // Reset to 'info' step whenever the modal opens fresh
+  useEffect(() => {
+    if (open) setStep('info')
+  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -109,6 +119,13 @@ function SecurityModal({
   }, [open, onClose])
 
   if (!open) return null
+
+  // Subtitle changes based on active step
+  const subtitle = hasPassword
+    ? t('Zmień hasło do swojego konta', 'Смена пароля аккаунта')
+    : step === 'create'
+    ? t('Utwórz hasło dla logowania e-mail', 'Создайте пароль для входа по e-mail')
+    : t('Zarządzaj hasłem do swojego konta', 'Управление паролем аккаунта')
 
   return createPortal(
     <div
@@ -131,9 +148,7 @@ function SecurityModal({
               <h2 className="font-heading text-base font-semibold text-foreground">
                 {t('Bezpieczeństwo i Hasło', 'Безопасность и пароль')}
               </h2>
-              <p className="mt-0.5 text-xs text-muted-foreground">
-                {t('Zarządzaj hasłem do swojego konta', 'Управление паролем аккаунта')}
-              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
             </div>
           </div>
           <button
@@ -147,7 +162,8 @@ function SecurityModal({
 
         {/* Body */}
         <div className="space-y-5 px-6 py-5">
-          {!hasPassword ? (
+          {/* ── No password yet: info screen ─────────────────────────────── */}
+          {!hasPassword && step === 'info' && (
             <>
               <div className="flex items-start gap-3 rounded-lg border border-border bg-muted/50 p-4">
                 <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand/15">
@@ -160,32 +176,24 @@ function SecurityModal({
                   )}
                 </p>
               </div>
-              <Button className="h-10 w-full bg-brand font-medium text-brand-foreground hover:bg-brand/90">
+              <Button
+                className="h-10 w-full bg-brand font-medium text-brand-foreground hover:bg-brand/90"
+                onClick={() => setStep('create')}
+              >
                 {t('Ustaw hasło dla logowania e-mail', 'Задать пароль для входа по e-mail')}
               </Button>
             </>
-          ) : (
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-              <div className="space-y-1.5">
-                <Label className="text-sm font-medium text-foreground">
-                  {t('Stare hasło', 'Старый пароль')}
-                </Label>
-                <div className="relative">
-                  <Input
-                    type={showOld ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    className="h-10 pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowOld((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {showOld ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
+          )}
 
+          {/* ── No password yet: creation form ───────────────────────────── */}
+          {!hasPassword && step === 'create' && (
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault()
+                onPasswordCreated()
+              }}
+            >
               <div className="space-y-1.5">
                 <Label className="text-sm font-medium text-foreground">
                   {t('Nowe hasło', 'Новый пароль')}
@@ -195,11 +203,13 @@ function SecurityModal({
                     type={showNew ? 'text' : 'password'}
                     placeholder="••••••••"
                     className="h-10 pr-10"
+                    autoFocus
                   />
                   <button
                     type="button"
                     onClick={() => setShowNew((v) => !v)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    aria-label={t('Pokaż/ukryj hasło', 'Показать/скрыть пароль')}
                   >
                     {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -220,6 +230,92 @@ function SecurityModal({
                     type="button"
                     onClick={() => setShowRepeat((v) => !v)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    aria-label={t('Pokaż/ukryj hasło', 'Показать/скрыть пароль')}
+                  >
+                    {showRepeat ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-1">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-10 flex-1"
+                  onClick={() => setStep('info')}
+                >
+                  {t('Wstecz', 'Назад')}
+                </Button>
+                <Button
+                  type="submit"
+                  className="h-10 flex-[2] bg-brand font-medium text-brand-foreground hover:bg-brand/90"
+                >
+                  {t('Zapisz i powiąż e-mail', 'Сохранить и привязать e-mail')}
+                </Button>
+              </div>
+            </form>
+          )}
+
+          {/* ── Has password: change-password form ───────────────────────── */}
+          {hasPassword && (
+            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-foreground">
+                  {t('Stare hasło', 'Старый пароль')}
+                </Label>
+                <div className="relative">
+                  <Input
+                    type={showOld ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    className="h-10 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowOld((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    aria-label={t('Pokaż/ukryj hasło', 'Показать/скрыть пароль')}
+                  >
+                    {showOld ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-foreground">
+                  {t('Nowe hasło', 'Новый пароль')}
+                </Label>
+                <div className="relative">
+                  <Input
+                    type={showNew ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    className="h-10 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNew((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    aria-label={t('Pokaż/ukryj hasło', 'Показать/скрыть пароль')}
+                  >
+                    {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-foreground">
+                  {t('Powtórz nowe hasło', 'Повторите новый пароль')}
+                </Label>
+                <div className="relative">
+                  <Input
+                    type={showRepeat ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    className="h-10 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowRepeat((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                    aria-label={t('Pokaż/ukryj hasło', 'Показать/скрыть пароль')}
                   >
                     {showRepeat ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -249,6 +345,13 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout }: HeaderAuthProp
   const [securityOpen, setSecurityOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  // Simulates the live hasPassword state within this session (toggled by the modal)
+  const [simHasPassword, setSimHasPassword] = useState(hasPassword)
+
+  // Keep in sync if the prop changes externally (e.g. DEV checkbox toggle)
+  useEffect(() => {
+    setSimHasPassword(hasPassword)
+  }, [hasPassword])
 
   useEffect(() => {
     setMounted(true)
@@ -281,8 +384,9 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout }: HeaderAuthProp
       {mounted && (
         <SecurityModal
           open={securityOpen}
-          hasPassword={hasPassword}
+          hasPassword={simHasPassword}
           onClose={() => setSecurityOpen(false)}
+          onPasswordCreated={() => setSimHasPassword(true)}
         />
       )}
 
