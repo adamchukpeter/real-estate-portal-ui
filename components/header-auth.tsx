@@ -382,7 +382,7 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false 
   }
 
   // ── Logged in — COMPACT (mobile) ─────────────────────────────────────────
-  // Bell + round avatar only; avatar opens the security modal directly.
+  // Bell + icon-only avatar that opens the same DropdownMenu as desktop.
   if (compact) {
     return (
       <div className="flex items-center gap-2">
@@ -444,14 +444,49 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false 
           </PopoverContent>
         </Popover>
 
-        {/* Round avatar — opens security modal */}
-        <button
-          onClick={() => setSecurityOpen(true)}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-graphite text-sm font-bold text-graphite-foreground transition-opacity hover:opacity-80"
-          aria-label={t('Moje konto', 'Мой аккаунт')}
-        >
-          J
-        </button>
+        {/* Avatar — icon-only trigger, same DropdownMenu as desktop */}
+        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+          <DropdownMenuTrigger
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-graphite text-sm font-bold text-graphite-foreground transition-opacity hover:opacity-80"
+            aria-label={t('Moje konto', 'Мой аккаунт')}
+          >
+            J
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end" className="w-56 p-1" sideOffset={6}>
+            <DropdownMenuItem asChild>
+              <Link
+                href="/profile"
+                className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm"
+              >
+                <HardHat className="h-4 w-4 text-muted-foreground" />
+                {t('Mój profil', 'Мой профиль')}
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm"
+              closeOnClick={false}
+              onClick={() => {
+                setDropdownOpen(false)
+                setSecurityOpen(true)
+              }}
+            >
+              <Shield className="h-4 w-4 text-muted-foreground" />
+              {t('Bezpieczeństwo', 'Безопасность')}
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm text-muted-foreground hover:text-foreground focus:text-foreground"
+              onClick={onLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              {t('Wyloguj się', 'Выйти')}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     )
   }
