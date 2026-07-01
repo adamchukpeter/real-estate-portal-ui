@@ -49,36 +49,6 @@ export function Header() {
           </button>
 
           <div className="ml-auto flex items-center gap-2">
-            {/* Dev Toggles — subtle control panel for Preview */}
-            <div className="hidden items-center gap-1.5 rounded-md border border-dashed border-border bg-muted/40 px-2 py-1 text-[10px] text-muted-foreground sm:flex">
-              <span className="font-mono font-semibold text-muted-foreground/60 mr-0.5">DEV</span>
-              <label className="flex cursor-pointer items-center gap-1 select-none">
-                <input
-                  type="checkbox"
-                  checked={isLoggedIn}
-                  onChange={(e) => setIsLoggedIn(e.target.checked)}
-                  className="h-3 w-3 accent-graphite cursor-pointer"
-                />
-                <span>isLoggedIn</span>
-              </label>
-              <span className="text-border">|</span>
-              <label
-                className={cn(
-                  'flex cursor-pointer items-center gap-1 select-none transition-opacity',
-                  !isLoggedIn && 'pointer-events-none opacity-30',
-                )}
-              >
-                <input
-                  type="checkbox"
-                  checked={hasPassword}
-                  onChange={(e) => setHasPassword(e.target.checked)}
-                  disabled={!isLoggedIn}
-                  className="h-3 w-3 accent-graphite cursor-pointer"
-                />
-                <span>hasPassword</span>
-              </label>
-            </div>
-
             {/* Language switcher */}
             <div className="flex items-center rounded-md border border-border bg-secondary overflow-hidden text-sm font-medium">
               <button
@@ -131,6 +101,36 @@ export function Header() {
 
       {/* Search hub overlay */}
       {searchOpen && <SearchHub onClose={() => setSearchOpen(false)} />}
+
+      {/* Floating DEV toggles — fixed bottom-left, preview only */}
+      <div className="fixed bottom-4 left-4 z-[9999] flex items-center gap-3 rounded-lg bg-slate-900/90 px-3 py-2 text-xs text-white shadow-2xl backdrop-blur-sm">
+        <span className="font-mono font-bold text-slate-400">DEV</span>
+        <label className="flex cursor-pointer items-center gap-1.5 select-none">
+          <input
+            type="checkbox"
+            checked={isLoggedIn}
+            onChange={(e) => setIsLoggedIn(e.target.checked)}
+            className="h-3 w-3 accent-white cursor-pointer"
+          />
+          <span>isLoggedIn</span>
+        </label>
+        <span className="text-slate-600">|</span>
+        <label
+          className={cn(
+            'flex cursor-pointer items-center gap-1.5 select-none transition-opacity',
+            !isLoggedIn && 'pointer-events-none opacity-30',
+          )}
+        >
+          <input
+            type="checkbox"
+            checked={hasPassword}
+            onChange={(e) => setHasPassword(e.target.checked)}
+            disabled={!isLoggedIn}
+            className="h-3 w-3 accent-white cursor-pointer"
+          />
+          <span>hasPassword</span>
+        </label>
+      </div>
     </>
   )
 }
