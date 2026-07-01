@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { Eye, EyeOff, HardHat, ArrowRight } from 'lucide-react'
-import { LangProvider, useLang } from '@/lib/lang-context'
+import { useLang } from '@/lib/lang-context'
 import { cn } from '@/lib/utils'
 
 function LoginContent() {
@@ -233,9 +233,5 @@ function LoginContent() {
 }
 
 export default function LoginPage() {
-  return (
-    <LangProvider>
-      <LoginContent />
-    </LangProvider>
-  )
+  return <LoginContent />
 }

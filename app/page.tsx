@@ -5,7 +5,7 @@ import { ArrowRight, ChevronRight, Shield, Zap, Award } from 'lucide-react'
 import { Header } from '@/components/header'
 import { MapPreview } from '@/components/map-preview'
 import { PropertyCard, type Property } from '@/components/property-card'
-import { LangProvider, useLang } from '@/lib/lang-context'
+import { useLang } from '@/lib/lang-context'
 
 const PROPERTIES: Property[] = [
   {
@@ -268,9 +268,5 @@ function HomeContent() {
 }
 
 export default function HomePage() {
-  return (
-    <LangProvider>
-      <HomeContent />
-    </LangProvider>
-  )
+  return <HomeContent />
 }

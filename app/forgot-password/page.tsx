@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { HardHat, ArrowLeft, ArrowRight, MailCheck, RefreshCw } from 'lucide-react'
-import { LangProvider, useLang } from '@/lib/lang-context'
+import { useLang } from '@/lib/lang-context'
 import { cn } from '@/lib/utils'
 
 type Step = 'request' | 'sent'
@@ -260,9 +260,5 @@ function ForgotPasswordContent() {
 }
 
 export default function ForgotPasswordPage() {
-  return (
-    <LangProvider>
-      <ForgotPasswordContent />
-    </LangProvider>
-  )
+  return <ForgotPasswordContent />
 }

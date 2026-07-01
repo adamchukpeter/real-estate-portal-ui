@@ -12,7 +12,7 @@ import {
   EyeOff,
   ChevronLeft,
 } from 'lucide-react'
-import { LangProvider, useLang } from '@/lib/lang-context'
+import { useLang } from '@/lib/lang-context'
 import { cn } from '@/lib/utils'
 
 type Role = 'client' | 'company' | null
@@ -300,7 +300,7 @@ function RegisterContent() {
                     <input
                       id="company"
                       type="text"
-                      placeholder={t('np. Kowalski Budownictwo Sp. z o.o.', 'напр. Иванов Строй ООО')}
+                      placeholder={t('np. Kowalski Budownictwo Sp. z o.o.', 'напр. Иванов Строй ��ОО')}
                       className="h-10 rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
                     />
                   </div>
@@ -426,9 +426,5 @@ function RegisterContent() {
 }
 
 export default function RegisterPage() {
-  return (
-    <LangProvider>
-      <RegisterContent />
-    </LangProvider>
-  )
+  return <RegisterContent />
 }
