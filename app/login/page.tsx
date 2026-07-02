@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { Eye, EyeOff, HardHat, ArrowRight } from 'lucide-react'
@@ -14,49 +13,47 @@ function LoginContent() {
   const [password, setPassword] = useState('')
 
   return (
-    <div className="flex min-h-screen">
-      {/* ── LEFT: Form ── */}
-      <div className="flex w-full flex-col justify-between px-6 py-8 sm:px-10 lg:w-1/2 lg:px-16">
-        {/* Top bar */}
-        <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-graphite">
-              <HardHat className="h-4 w-4 text-brand-foreground" />
-            </div>
-            <span className="font-heading text-lg font-bold tracking-tight text-graphite">
-              Buduj<span className="text-brand">PL</span>
-            </span>
-          </Link>
-
-          {/* Lang switcher */}
-          <div className="flex overflow-hidden rounded-md border border-border text-sm font-medium">
-            <button
-              onClick={() => setLang('pl')}
-              className={cn(
-                'px-3 py-1.5 transition-colors',
-                lang === 'pl'
-                  ? 'bg-graphite text-graphite-foreground'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
-            >
-              PL
-            </button>
-            <button
-              onClick={() => setLang('ru')}
-              className={cn(
-                'px-3 py-1.5 transition-colors',
-                lang === 'ru'
-                  ? 'bg-graphite text-graphite-foreground'
-                  : 'text-muted-foreground hover:text-foreground',
-              )}
-            >
-              RU
-            </button>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-4 py-12">
+      {/* Top bar */}
+      <div className="mb-8 flex w-full max-w-sm items-center justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-graphite">
+            <HardHat className="h-4 w-4 text-brand-foreground" />
           </div>
-        </div>
+          <span className="font-heading text-lg font-bold tracking-tight text-graphite">
+            Buduj<span className="text-brand">PL</span>
+          </span>
+        </Link>
 
-        {/* Form card */}
-        <div className="mx-auto w-full max-w-sm">
+        {/* Lang switcher */}
+        <div className="flex overflow-hidden rounded-md border border-border text-sm font-medium">
+          <button
+            onClick={() => setLang('pl')}
+            className={cn(
+              'px-3 py-1.5 transition-colors',
+              lang === 'pl'
+                ? 'bg-graphite text-graphite-foreground'
+                : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            PL
+          </button>
+          <button
+            onClick={() => setLang('ru')}
+            className={cn(
+              'px-3 py-1.5 transition-colors',
+              lang === 'ru'
+                ? 'bg-graphite text-graphite-foreground'
+                : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            RU
+          </button>
+        </div>
+      </div>
+
+      {/* Form card */}
+      <div className="w-full max-w-sm rounded-2xl border border-border bg-white p-8 shadow-sm">
           <div className="mb-8">
             <h1 className="font-heading text-3xl font-extrabold text-foreground">
               {t('Zaloguj się', 'Войти в аккаунт')}
@@ -181,85 +178,36 @@ function LoginContent() {
               {t('Zarejestruj się', 'Зарегистрироваться')}
             </Link>
           </p>
-        </div>
-
-        {/* Bottom */}
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          {lang === 'pl' ? (
-            <>
-              Logując się, akceptujesz nasz{' '}
-              <Link href="/terms" className="underline-offset-2 hover:underline">
-                Regulamin
-              </Link>{' '}
-              i{' '}
-              <Link href="/privacy-policy" className="underline-offset-2 hover:underline">
-                Politykę prywatności
-              </Link>
-              .
-            </>
-          ) : (
-            <>
-              Входя в систему, вы принимаете наши{' '}
-              <Link href="/terms" className="underline-offset-2 hover:underline">
-                Условия использования
-              </Link>{' '}
-              и{' '}
-              <Link href="/privacy-policy" className="underline-offset-2 hover:underline">
-                Политику конфиденциальности
-              </Link>
-              .
-            </>
-          )}
-        </p>
       </div>
 
-      {/* ── RIGHT: Visual ── */}
-      <div className="relative hidden lg:flex lg:w-1/2">
-        <Image
-          src="/images/login-bg.png"
-          alt="Warsaw skyline"
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-graphite/60" />
-
-        {/* Content over image */}
-        <div className="relative z-10 flex flex-col justify-end p-14 pb-16">
-          <blockquote className="max-w-md">
-            <p className="font-heading text-2xl font-bold leading-snug text-graphite-foreground text-balance">
-              &ldquo;{t(
-                'Znaleźliśmy idealną działkę i ekipę remontową w ciągu tygodnia. Polecam każdemu.',
-                'Мы нашли идеальный участок и строительную бригаду за неделю. Рекомендую всем.',
-              )}&rdquo;
-            </p>
-            <footer className="mt-4 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand font-heading font-bold text-brand-foreground">
-                M
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-graphite-foreground">Michał Zawadzki</p>
-                <p className="text-xs text-graphite-foreground/60">Warszawa</p>
-              </div>
-            </footer>
-          </blockquote>
-
-          {/* Stats row */}
-          <div className="mt-10 flex gap-8 border-t border-graphite-foreground/20 pt-8">
-            {[
-              { v: '24 000+', l: t('Ogłoszeń', 'Объявлений') },
-              { v: '3 800+', l: t('Firm', 'Компаний') },
-              { v: '12 krajów', l: t('Zasięg', 'Охват') },
-            ].map((s) => (
-              <div key={s.v}>
-                <p className="font-heading text-xl font-extrabold text-graphite-foreground">{s.v}</p>
-                <p className="text-xs text-graphite-foreground/60">{s.l}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Bottom legal */}
+      <p className="mt-6 text-center text-xs text-muted-foreground">
+        {lang === 'pl' ? (
+          <>
+            Logując się, akceptujesz nasz{' '}
+            <Link href="/terms" className="underline-offset-2 hover:underline">
+              Regulamin
+            </Link>{' '}
+            i{' '}
+            <Link href="/privacy-policy" className="underline-offset-2 hover:underline">
+              Politykę prywatności
+            </Link>
+            .
+          </>
+        ) : (
+          <>
+            Входя в систему, вы принимаете наши{' '}
+            <Link href="/terms" className="underline-offset-2 hover:underline">
+              Условия использования
+            </Link>{' '}
+            и{' '}
+            <Link href="/privacy-policy" className="underline-offset-2 hover:underline">
+              Политику конфиденциальности
+            </Link>
+            .
+          </>
+        )}
+      </p>
     </div>
   )
 }
