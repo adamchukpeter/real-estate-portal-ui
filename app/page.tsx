@@ -1,55 +1,117 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, ChevronRight, Shield, Zap, Award, Search, HardHat, Users } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronRight, Shield, Zap, Award, Search, HardHat, Users } from 'lucide-react'
+
 import { Header } from '@/components/header'
-import { PropertyCard, type Property } from '@/components/property-card'
+import { PropertyCard, type Property, type PropertyCategory } from '@/components/property-card'
 import { useLang } from '@/lib/lang-context'
 
 const PROPERTIES: Property[] = [
+  // ── Mieszkania ────────────────────────────────────────────────────────────
   {
     id: 1,
+    category: 'Mieszkania',
     image: '/images/prop-1.png',
     price: 850000,
     area: 72,
-    city: 'Warszawa, Mokotów',
     rooms: 3,
+    city: 'Warszawa, Mokotów',
     market: 'Pierwotny',
     title: 'Nowoczesne mieszkanie 3-pokojowe z balkonem',
     titleRu: 'Современная 3-комнатная квартира с балконом',
   },
   {
     id: 2,
+    category: 'Mieszkania',
+    image: '/images/prop-3.png',
+    price: 390000,
+    area: 38,
+    rooms: 1,
+    city: 'Wrocław, Śródmieście',
+    market: 'Pierwotny',
+    title: 'Kawalerka w centrum, wysoki standard',
+    titleRu: 'Студия в центре города, высокий стандарт',
+  },
+  // ── Domy ─────────────────────────────────────────────────────────────────
+  {
+    id: 3,
+    category: 'Domy',
     image: '/images/prop-2.png',
     price: 1290000,
     area: 142,
-    city: 'Kraków, Krowodrza',
     rooms: 5,
+    city: 'Kraków, Krowodrza',
     market: 'Wtórny',
     title: 'Szeregówka z ogrodem w spokojnej okolicy',
     titleRu: 'Таунхаус с садом в тихом районе',
   },
   {
-    id: 3,
-    image: '/images/prop-3.png',
-    price: 390000,
-    area: 38,
-    city: 'Wrocław, Śródmieście',
-    rooms: 1,
-    market: 'Pierwotny',
-    title: 'Kawalerka w centrum, wysoki standard',
-    titleRu: 'Студия в центре города, высокий стандарт',
-  },
-  {
     id: 4,
+    category: 'Domy',
     image: '/images/prop-4.png',
     price: 1750000,
     area: 210,
-    city: 'Gdańsk, Oliwa',
     rooms: 6,
+    city: 'Gdańsk, Oliwa',
     market: 'Pierwotny',
     title: 'Dom wolnostojący z garażem dwustanowiskowym',
     titleRu: 'Отдельный дом с двойным гаражом',
+  },
+  // ── Działki ───────────────────────────────────────────────────────────────
+  {
+    id: 5,
+    category: 'Działki',
+    image: '/images/prop-1.png',
+    price: 320000,
+    area: 1200,
+    city: 'Poznań, Jeżyce',
+    market: 'Wtórny',
+    title: 'Działka budowlana w spokojnej dzielnicy',
+    titleRu: 'Строительный участок в тихом районе',
+    plotTypePl: 'Budowlana',
+    plotTypeRu: 'Строительный',
+  },
+  {
+    id: 6,
+    category: 'Działki',
+    image: '/images/prop-2.png',
+    price: 95000,
+    area: 4500,
+    city: 'Zakopane, Podhale',
+    market: 'Wtórny',
+    title: 'Działka rekreacyjna z widokiem na Tatry',
+    titleRu: 'Рекреационный участок с видом на Татры',
+    plotTypePl: 'Rekreacyjna',
+    plotTypeRu: 'Рекреационный',
+  },
+  // ── Komercyjne ────────────────────────────────────────────────────────────
+  {
+    id: 7,
+    category: 'Komercyjne',
+    image: '/images/prop-3.png',
+    price: 2400000,
+    area: 450,
+    city: 'Łódź, Śródmieście',
+    market: 'Pierwotny',
+    title: 'Nowoczesne biuro klasy A w centrum',
+    titleRu: 'Современный офис класса А в центре',
+    purposePl: 'Biuro',
+    purposeRu: 'Офис',
+  },
+  {
+    id: 8,
+    category: 'Komercyjne',
+    image: '/images/prop-4.png',
+    price: 1850000,
+    area: 820,
+    city: 'Wrocław, Fabryczna',
+    market: 'Wtórny',
+    title: 'Hala magazynowa z rampą i biurem socjalnym',
+    titleRu: 'Складское помещение с рампой и офисом',
+    purposePl: 'Magazyn',
+    purposeRu: 'Склад',
   },
 ]
 
@@ -77,13 +139,25 @@ const FEATURES = [
   },
 ]
 
-const FILTER_PILLS_PL = ['Wszystkie', 'Mieszkania', 'Domy', 'Działki', 'Komercyjne']
-const FILTER_PILLS_RU = ['Все', 'Квартиры', 'Дома', 'Участки', 'Коммерческие']
+// Tab keys are always the PL canonical category names (or 'Wszystkie')
+const TABS: Array<{ keyPl: string; keyRu: string; category: PropertyCategory | null }> = [
+  { keyPl: 'Wszystkie', keyRu: 'Все',          category: null },
+  { keyPl: 'Mieszkania', keyRu: 'Квартиры',    category: 'Mieszkania' },
+  { keyPl: 'Domy',       keyRu: 'Дома',        category: 'Domy' },
+  { keyPl: 'Działki',    keyRu: 'Участки',     category: 'Działki' },
+  { keyPl: 'Komercyjne', keyRu: 'Коммерческие', category: 'Komercyjne' },
+]
 
 function HomeContent() {
   const { lang } = useLang()
   const t = (pl: string, ru: string) => (lang === 'pl' ? pl : ru)
-  const pills = lang === 'pl' ? FILTER_PILLS_PL : FILTER_PILLS_RU
+
+  const [activeCategory, setActiveCategory] = useState<PropertyCategory | null>(null)
+
+  const visibleProperties =
+    activeCategory === null
+      ? PROPERTIES
+      : PROPERTIES.filter((p) => p.category === activeCategory)
 
   return (
     <div className="min-h-screen bg-background">
@@ -168,23 +242,27 @@ function HomeContent() {
 
             {/* Filter pills */}
             <div className="mb-6 flex flex-wrap gap-2">
-              {pills.map((label, i) => (
-                <button
-                  key={i}
-                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-                    i === 0
-                      ? 'bg-graphite text-graphite-foreground'
-                      : 'border border-border bg-card text-muted-foreground hover:border-graphite hover:text-foreground'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+              {TABS.map((tab) => {
+                const isActive = activeCategory === tab.category
+                return (
+                  <button
+                    key={tab.keyPl}
+                    onClick={() => setActiveCategory(tab.category)}
+                    className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-graphite text-graphite-foreground'
+                        : 'border border-border bg-card text-muted-foreground hover:border-graphite hover:text-foreground'
+                    }`}
+                  >
+                    {lang === 'pl' ? tab.keyPl : tab.keyRu}
+                  </button>
+                )
+              })}
             </div>
 
             {/* Grid */}
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {PROPERTIES.map((p) => (
+              {visibleProperties.map((p) => (
                 <PropertyCard key={p.id} property={p} lang={lang} />
               ))}
             </div>
