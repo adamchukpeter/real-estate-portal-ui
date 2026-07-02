@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import { HardHat, ArrowLeft, ArrowRight, MailCheck, RefreshCw } from 'lucide-react'
@@ -20,11 +19,9 @@ function ForgotPasswordContent() {
   }
 
   return (
-    <div className="flex min-h-screen">
-      {/* ── LEFT: Form ── */}
-      <div className="flex w-full flex-col justify-between px-6 py-8 sm:px-10 lg:w-1/2 lg:px-16">
-        {/* Top bar */}
-        <div className="flex items-center justify-between">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-4 py-12">
+      {/* Top bar */}
+      <div className="mb-8 flex w-full max-w-sm items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-graphite">
               <HardHat className="h-4 w-4 text-brand-foreground" />
@@ -61,8 +58,8 @@ function ForgotPasswordContent() {
           </div>
         </div>
 
-        {/* Form area */}
-        <div className="mx-auto w-full max-w-sm">
+      {/* Form card */}
+      <div className="w-full max-w-sm rounded-2xl border border-border bg-white p-8 shadow-sm">
           {step === 'request' ? (
             <>
               {/* Back link */}
@@ -187,74 +184,15 @@ function ForgotPasswordContent() {
           )}
         </div>
 
-        {/* Bottom footnote */}
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          {t(
-            'Potrzebujesz pomocy? Skontaktuj się z nami: pomoc@budujpl.pl',
-            'Нужна помощь? Напишите нам: pomoc@budujpl.pl',
-          )}
-        </p>
       </div>
 
-      {/* ── RIGHT: Visual ── */}
-      <div className="relative hidden lg:flex lg:w-1/2">
-        <Image
-          src="/images/login-bg.png"
-          alt="Warsaw skyline"
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-graphite/60" />
-
-        {/* Content over image */}
-        <div className="relative z-10 flex flex-col justify-end p-14 pb-16">
-          {/* Security tips card */}
-          <div className="mb-8 rounded-2xl border border-graphite-foreground/20 bg-graphite/40 p-6 backdrop-blur-sm">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-brand">
-              {t('Wskazówki bezpieczeństwa', 'Советы по безопасности')}
-            </p>
-            <ul className="space-y-3">
-              {[
-                t(
-                  'Używaj unikalnego hasła dla każdej strony',
-                  'Используйте уникальный пароль для каждого сайта',
-                ),
-                t(
-                  'Hasło powinno mieć minimum 12 znaków',
-                  'Пароль должен содержать не менее 12 символов',
-                ),
-                t(
-                  'Włącz weryfikację dwuetapową (2FA)',
-                  'Включите двухфакторную аутентификацию (2FA)',
-                ),
-              ].map((tip, i) => (
-                <li key={i} className="flex items-start gap-2.5">
-                  <span className="mt-0.5 h-4 w-4 shrink-0 rounded-full bg-brand/20 text-center text-[10px] font-bold leading-4 text-brand">
-                    ✓
-                  </span>
-                  <span className="text-sm leading-relaxed text-graphite-foreground/80">{tip}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Stats row */}
-          <div className="flex gap-8 border-t border-graphite-foreground/20 pt-8">
-            {[
-              { v: '24 000+', l: t('Ogłoszeń', 'Объявлений') },
-              { v: '3 800+', l: t('Firm', 'Компаний') },
-              { v: '12 krajów', l: t('Zasięg', 'Охват') },
-            ].map((s) => (
-              <div key={s.v}>
-                <p className="font-heading text-xl font-extrabold text-graphite-foreground">{s.v}</p>
-                <p className="text-xs text-graphite-foreground/60">{s.l}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Bottom footnote */}
+      <p className="mt-6 text-center text-xs text-muted-foreground">
+        {t(
+          'Potrzebujesz pomocy? Skontaktuj się z nami: pomoc@budujpl.pl',
+          'Нужна помощь? Напишите нам: pomoc@budujpl.pl',
+        )}
+      </p>
     </div>
   )
 }
