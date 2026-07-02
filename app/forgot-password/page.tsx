@@ -184,8 +184,6 @@ function ForgotPasswordContent() {
           )}
         </div>
 
-      </div>
-
       {/* Bottom footnote */}
       <p className="mt-6 text-center text-xs text-muted-foreground">
         {t(
