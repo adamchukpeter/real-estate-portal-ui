@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import { Eye, EyeOff, HardHat, ArrowRight, Facebook } from 'lucide-react'
+import { Eye, EyeOff, HardHat, ArrowRight } from 'lucide-react'
 import { useLang } from '@/lib/lang-context'
 import { cn } from '@/lib/utils'
 
@@ -168,7 +168,9 @@ function LoginContent() {
               type="button"
               className="flex h-10 w-full items-center justify-center gap-2.5 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <Facebook className="h-4 w-4 text-[#1877F2]" aria-hidden="true" />
+              <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="#1877F2">
+                <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047v-2.66c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.883v2.27h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+              </svg>
               Facebook
             </button>
           </form>
