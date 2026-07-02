@@ -53,12 +53,6 @@ const PROPERTIES: Property[] = [
   },
 ]
 
-const STATS = [
-  { value: '24 000+', labelPl: 'Aktywnych ogłoszeń', labelRu: 'Активных объявлений' },
-  { value: '3 800+', labelPl: 'Zweryfikowanych firm', labelRu: 'Проверенных компаний' },
-  { value: '98%', labelPl: 'Zadowolonych klientów', labelRu: 'Довольных клиентов' },
-]
-
 const FEATURES = [
   {
     icon: Shield,
@@ -147,25 +141,12 @@ function HomeContent() {
                 </Link>
               </div>
 
-              {/* Stats */}
-              <div className="mt-12 grid w-full grid-cols-3 gap-4 border-t border-border pt-8">
-                {STATS.map((s) => (
-                  <div key={s.value} className="flex flex-col items-center">
-                    <p className="font-heading text-2xl font-extrabold text-foreground sm:text-3xl">
-                      {s.value}
-                    </p>
-                    <p className="mt-0.5 text-xs leading-tight text-muted-foreground">
-                      {lang === 'pl' ? s.labelPl : s.labelRu}
-                    </p>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </section>
 
         {/* ── LISTINGS ── */}
-        <section className="bg-secondary/40 py-14">
+        <section className="border-t border-slate-100 bg-secondary/40 py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="mb-8 flex items-end justify-between">
               <div>
