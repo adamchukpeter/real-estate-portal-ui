@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import { Eye, EyeOff, HardHat, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, HardHat, ArrowRight, Facebook } from 'lucide-react'
 import { useLang } from '@/lib/lang-context'
 import { cn } from '@/lib/utils'
 
@@ -162,6 +162,15 @@ function LoginContent() {
               </svg>
               Google
             </button>
+
+            {/* Facebook OAuth */}
+            <button
+              type="button"
+              className="flex h-10 w-full items-center justify-center gap-2.5 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Facebook className="h-4 w-4 text-[#1877F2]" aria-hidden="true" />
+              Facebook
+            </button>
           </form>
 
           <p className="mt-8 text-center text-sm text-muted-foreground">
@@ -174,9 +183,30 @@ function LoginContent() {
 
         {/* Bottom */}
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          {t(
-            'Logując się, akceptujesz nasz Regulamin i Politykę prywatności.',
-            'Входя в систему, вы принимаете наши Условия использования и Политику конфиденциальности.',
+          {lang === 'pl' ? (
+            <>
+              Logując się, akceptujesz nasz{' '}
+              <Link href="/terms" className="underline-offset-2 hover:underline">
+                Regulamin
+              </Link>{' '}
+              i{' '}
+              <Link href="/privacy-policy" className="underline-offset-2 hover:underline">
+                Politykę prywatności
+              </Link>
+              .
+            </>
+          ) : (
+            <>
+              Входя в систему, вы принимаете наши{' '}
+              <Link href="/terms" className="underline-offset-2 hover:underline">
+                Условия использования
+              </Link>{' '}
+              и{' '}
+              <Link href="/privacy-policy" className="underline-offset-2 hover:underline">
+                Политику конфиденциальности
+              </Link>
+              .
+            </>
           )}
         </p>
       </div>
