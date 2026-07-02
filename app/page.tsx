@@ -171,10 +171,10 @@ const FEATURES = [
   },
   {
     icon: Zap,
-    titlePl: 'Szybkie zapytania',
-    titleRu: 'Быстрые запросы',
-    descPl: 'Wyślij zapytanie ofertowe do kilku firm jednocześnie i porównaj oferty.',
-    descRu: 'Отправьте запрос сразу в несколько компаний и сравните предложения.',
+    titlePl: 'Wiarygodne opinie',
+    titleRu: 'Честные отзывы',
+    descPl: 'Koniec z fałszywymi ocenami. Każda opinia na portalu jest ściśle powiązana z konkretnym, zrealizowanym projektem w portfolio wykonawcy.',
+    descRu: 'Конец фейковым оценкам. Каждый отзыв на портале жестко привязан к конкретному реализованному проекту в портфолио исполнителя.',
   },
   {
     icon: Award,
