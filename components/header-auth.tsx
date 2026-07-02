@@ -7,6 +7,7 @@ import {
   Bell,
   ChevronDown,
   HardHat,
+  Heart,
   Shield,
   LogOut,
   Megaphone,
@@ -556,6 +557,40 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false 
               </Link>
             </DropdownMenuItem>
 
+            <DropdownMenuItem asChild>
+              <Link
+                href="/favorites"
+                className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm"
+              >
+                <Heart className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-brand" />
+                {t('Ulubione', 'Избранное')}
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm"
+              closeOnClick={false}
+              onClick={() => {
+                setDropdownOpen(false)
+                setSecurityOpen(true)
+              }}
+            >
+              <Shield className="h-4 w-4 text-muted-foreground" />
+              {t('Bezpieczeństwo', 'Безопасность')}
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm text-muted-foreground hover:text-foreground focus:text-foreground"
+              onClick={onLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              {t('Wyloguj się', 'Выйти')}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        
             <DropdownMenuItem
               className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm"
               closeOnClick={false}
@@ -634,6 +669,16 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false 
             >
               <HardHat className="h-4 w-4 text-muted-foreground" />
               {t('Mój profil', 'Мой профиль')}
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem asChild>
+            <Link
+              href="/favorites"
+              className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm"
+            >
+              <Heart className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-brand" />
+              {t('Ulubione', 'Избранное')}
             </Link>
           </DropdownMenuItem>
 
