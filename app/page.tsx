@@ -6,6 +6,7 @@ import { ChevronRight, Shield, Zap, Award, Search, HardHat, Users } from 'lucide
 
 import { Header } from '@/components/header'
 import { PropertyCard, type Property, type PropertyCategory } from '@/components/property-card'
+import { ContractorCard, type Contractor } from '@/components/contractor-card'
 import { useLang } from '@/lib/lang-context'
 
 const PROPERTIES: Property[] = [
@@ -112,6 +113,51 @@ const PROPERTIES: Property[] = [
     titleRu: 'Складское помещение с рампой и офисом',
     purposePl: 'Magazyn',
     purposeRu: 'Склад',
+  },
+]
+
+const CONTRACTORS: Contractor[] = [
+  {
+    id: 1,
+    initials: 'PW',
+    namePl: 'ProWykończenia Sp. z o.o.',
+    nameRu: 'ProWykończenia ООО',
+    city: 'Warszawa',
+    rating: 4.9,
+    reviewCount: 127,
+    tagsPl: ['Wykończenia', 'Malowanie'],
+    tagsRu: ['Отделка', 'Покраска'],
+    photoMain: '/images/work-1a.png',
+    photoTopRight: '/images/work-1b.png',
+    photoBottomRight: '/images/work-1c.png',
+  },
+  {
+    id: 2,
+    initials: 'MT',
+    namePl: 'MistrzoTynk Kraków',
+    nameRu: 'МастерШтукатур Краков',
+    city: 'Kraków',
+    rating: 4.8,
+    reviewCount: 84,
+    tagsPl: ['Tynkowanie', 'Szpachlowanie'],
+    tagsRu: ['Штукатурка', 'Шпаклёвка'],
+    photoMain: '/images/work-2a.png',
+    photoTopRight: '/images/work-2b.png',
+    photoBottomRight: '/images/work-2c.png',
+  },
+  {
+    id: 3,
+    initials: 'BD',
+    namePl: 'BudDom Gdańsk',
+    nameRu: 'БудДом Гданьск',
+    city: 'Gdańsk',
+    rating: 5.0,
+    reviewCount: 61,
+    tagsPl: ['Budowa domów', 'Konstrukcje'],
+    tagsRu: ['Строительство', 'Конструкции'],
+    photoMain: '/images/work-3a.png',
+    photoTopRight: '/images/work-3b.png',
+    photoBottomRight: '/images/work-3c.png',
   },
 ]
 
@@ -279,8 +325,47 @@ function HomeContent() {
           </div>
         </section>
 
+        {/* ── CONTRACTORS ── */}
+        <section className="border-t border-slate-100 bg-background py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <div className="mb-8 flex items-end justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-brand">
+                  {t('Sprawdzone firmy', 'Проверенные компании')}
+                </p>
+                <h2 className="mt-1 font-heading text-2xl font-bold text-foreground sm:text-3xl">
+                  {t('Polecani wykonawcy', 'Рекомендуемые исполнители')}
+                </h2>
+              </div>
+              <Link
+                href="/portfolio"
+                className="hidden items-center gap-1 text-sm font-medium text-brand hover:underline sm:flex"
+              >
+                {t('Zobacz wszystkich wykonawców', 'Все исполнители')}
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {CONTRACTORS.map((c) => (
+                <ContractorCard key={c.id} contractor={c} lang={lang} />
+              ))}
+            </div>
+
+            <div className="mt-8 text-center sm:hidden">
+              <Link
+                href="/portfolio"
+                className="inline-flex items-center gap-1 text-sm font-medium text-brand hover:underline"
+              >
+                {t('Zobacz wszystkich wykonawców', 'Все исполнители')}
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* ── FEATURES ── */}
-        <section className="py-14">
+        <section className="border-t border-slate-100 py-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <div className="mb-10 text-center">
               <p className="text-xs font-semibold uppercase tracking-widest text-brand">
