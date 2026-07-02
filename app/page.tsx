@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, ChevronRight, Shield, Zap, Award, Search, HardHat, Users } from 'lucide-react'
+import { ArrowRight, ChevronRight, Shield, Zap, Award } from 'lucide-react'
 import { Header } from '@/components/header'
+import { MapPreview } from '@/components/map-preview'
 import { PropertyCard, type Property } from '@/components/property-card'
 import { useLang } from '@/lib/lang-context'
 
@@ -98,59 +99,49 @@ function HomeContent() {
       <main>
         {/* ── HERO ── */}
         <section className="relative overflow-hidden bg-background">
-          <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 md:py-24">
-            <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-              {/* Pill label */}
-              <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-muted-foreground">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-12 sm:px-6 md:py-20 lg:grid-cols-2 lg:gap-14">
+            {/* Left: Copy */}
+            <div className="flex flex-col justify-center">
+              <div className="mb-5 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-muted-foreground">
                 <span className="h-1.5 w-1.5 rounded-full bg-brand" />
                 {t('Polska · Europa · Nieruchomości i usługi budowlane', 'Польша · Европа · Недвижимость и строительные услуги')}
               </div>
 
-              {/* H1 */}
-              <h1 className="font-heading text-4xl font-extrabold leading-[1.12] tracking-tight text-foreground text-balance sm:text-5xl xl:text-[3.5rem]">
+              <h1 className="font-heading text-4xl font-extrabold leading-[1.15] tracking-tight text-foreground text-balance sm:text-5xl xl:text-[3.25rem]">
                 {t('Portal Budowlany ', 'Строительный портал ')}
                 <span className="text-brand">{t('#1 w Polsce.', '№1 в Польше.')}</span>
                 <br />
                 {t('Od zakupu ziemi do wykończenia pod klucz.', 'От покупки земли до отделки под ключ.')}
               </h1>
 
-              {/* Subtitle */}
-              <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">
+              <p className="mt-5 max-w-lg text-base leading-relaxed text-muted-foreground">
                 {t(
-                  'Wszystko w jednym miejscu dla rynku nieruchomości i budownictwa. Tysiące ofert, zweryfikowane firmy i specjaliści na wyciągnięcie ręki.',
-                  'Всё в одном месте для рынка недвижимости и строительства. Тысячи предложений, проверенные компании и специалисты на расстоянии одного клика.',
+                  'Tysiące ofert nieruchomości, zweryfikowane firmy budowlane i rzemieślnicy. Wszystko w jednym miejscu dla rynku polskiego i europejskiego.',
+                  'Тысячи предложений недвижимости, проверенные строительные компании и мастера. Всё в одном месте для польского и европейского рынков.',
                 )}
               </p>
 
-              {/* 3 CTA buttons */}
-              <div className="mt-9 flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Link
-                  href="/catalog"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-brand-foreground shadow-sm transition-colors hover:bg-brand/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
+                  href="/search"
+                  className="inline-flex items-center gap-2 rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-brand-foreground shadow-sm transition-colors hover:bg-brand/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <Search className="h-4 w-4" />
-                  {t('Znajdź nieruchomość', 'Найти недвижимость')}
+                  {t('Znajdź obiekt lub mistrza', 'Найти объект или мастера')}
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  href="/portfolio"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:border-graphite hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
+                  href="/register"
+                  className="inline-flex items-center gap-2 rounded-lg border-2 border-graphite px-6 py-3 text-sm font-semibold text-graphite transition-colors hover:bg-graphite hover:text-graphite-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <Users className="h-4 w-4" />
-                  {t('Znajdź wykonawcę', 'Найти подрядчика')}
-                </Link>
-                <Link
-                  href="/register?role=business"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-graphite px-6 py-3 text-sm font-semibold text-graphite transition-colors hover:bg-graphite hover:text-graphite-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
-                >
-                  <HardHat className="h-4 w-4" />
-                  {t('Dołącz jako wykonawca lub sprzedawca', 'Присоединиться как подрядчик')}
+                  {t('Zamieść usługi / ogłoszenie', 'Разместить услуги / объявление')}
+                  <ChevronRight className="h-4 w-4" />
                 </Link>
               </div>
 
               {/* Stats */}
-              <div className="mt-12 grid w-full grid-cols-3 gap-4 border-t border-border pt-8">
+              <div className="mt-10 grid grid-cols-3 gap-4 border-t border-border pt-8">
                 {STATS.map((s) => (
-                  <div key={s.value} className="flex flex-col items-center">
+                  <div key={s.value}>
                     <p className="font-heading text-2xl font-extrabold text-foreground sm:text-3xl">
                       {s.value}
                     </p>
@@ -160,6 +151,11 @@ function HomeContent() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Right: Map */}
+            <div className="h-72 min-h-[400px] lg:h-auto">
+              <MapPreview />
             </div>
           </div>
         </section>
