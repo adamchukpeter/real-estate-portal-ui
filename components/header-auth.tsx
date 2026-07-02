@@ -547,16 +547,45 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false 
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end" className="w-56 p-1" sideOffset={6}>
-            <DropdownMenuItem asChild>
-              <Link
-                href="/profile"
-                className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm"
-              >
-                <HardHat className="h-4 w-4 text-muted-foreground" />
-                {t('Mój profil', 'Мой профиль')}
-              </Link>
+            <DropdownMenuItem
+              className="cursor-pointer gap-2.5 px-2 py-2 text-sm"
+              render={<Link href="/profile" />}
+            >
+              <HardHat className="h-4 w-4 text-muted-foreground" />
+              {t('Mój profil', 'Мой профиль')}
             </DropdownMenuItem>
 
+            <DropdownMenuItem
+              className="cursor-pointer gap-2.5 px-2 py-2 text-sm"
+              render={<Link href="/favorites" />}
+            >
+              <Heart className="h-4 w-4 text-muted-foreground" />
+              {t('Ulubione', 'Избранное')}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              className="cursor-pointer gap-2.5 px-2 py-2 text-sm"
+              onClick={() => {
+                setDropdownOpen(false)
+                setSecurityOpen(true)
+              }}
+            >
+              <Shield className="h-4 w-4 text-muted-foreground" />
+              {t('Bezpieczeństwo', 'Безопасность')}
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              className="cursor-pointer gap-2.5 px-2 py-2 text-sm"
+              onClick={onLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              {t('Wyloguj się', 'Wyloguj się')}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        
             <DropdownMenuItem asChild>
               <Link
                 href="/favorites"
@@ -638,29 +667,24 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false 
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-56 p-1" sideOffset={6}>
-          <DropdownMenuItem asChild>
-            <Link
-              href="/profile"
-              className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm"
-            >
-              <HardHat className="h-4 w-4 text-muted-foreground" />
-              {t('Mój profil', 'Мой профиль')}
-            </Link>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem asChild>
-            <Link
-              href="/favorites"
-              className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm"
-            >
-              <Heart className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-brand" />
-              {t('Ulubione', 'Избранное')}
-            </Link>
+          <DropdownMenuItem
+            className="cursor-pointer gap-2.5 px-2 py-2 text-sm"
+            render={<Link href="/profile" />}
+          >
+            <HardHat className="h-4 w-4 text-muted-foreground" />
+            {t('Mój profil', 'Мой профиль')}
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm"
-            closeOnClick={false}
+            className="cursor-pointer gap-2.5 px-2 py-2 text-sm"
+            render={<Link href="/favorites" />}
+          >
+            <Heart className="h-4 w-4 text-muted-foreground" />
+            {t('Ulubione', 'Избранное')}
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            className="cursor-pointer gap-2.5 px-2 py-2 text-sm"
             onClick={() => {
               setDropdownOpen(false)
               setSecurityOpen(true)
@@ -673,7 +697,7 @@ export function HeaderAuth({ isLoggedIn, hasPassword, onLogout, compact = false 
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            className="flex cursor-pointer items-center gap-2.5 rounded-sm px-2 py-2 text-sm text-muted-foreground hover:text-foreground focus:text-foreground"
+            className="cursor-pointer gap-2.5 px-2 py-2 text-sm"
             onClick={onLogout}
           >
             <LogOut className="h-4 w-4" />
