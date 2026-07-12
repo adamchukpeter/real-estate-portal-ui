@@ -54,6 +54,47 @@ function RegisterContent() {
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [agreeInvoice, setAgreeInvoice] = useState(false)
 
+  // Form field values
+  const [fname, setFname] = useState('')
+  const [lname, setLname] = useState('')
+  const [company, setCompany] = useState('')
+  const [nip, setNip] = useState('')
+  const [street, setStreet] = useState('')
+  const [postcode, setPostcode] = useState('')
+  const [city, setCity] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  // Validation errors — key = field id, value = true when invalid
+  const [errors, setErrors] = useState<Record<string, boolean>>({})
+
+  function validate(): boolean {
+    const next: Record<string, boolean> = {}
+    if (!fname.trim()) next.fname = true
+    if (!email.trim()) next.email = true
+    if (!password.trim()) next.password = true
+    if (!agreeTerms) next.terms = true
+    if (isCompany) {
+      if (!lname.trim()) next.lname = true
+      if (!company.trim()) next.company = true
+      if (!nip.trim()) next.nip = true
+      if (!street.trim()) next.street = true
+      if (!postcode.trim()) next.postcode = true
+      if (!city.trim()) next.city = true
+    }
+    setErrors(next)
+    return Object.keys(next).length === 0
+  }
+
+  function clearError(field: string) {
+    setErrors((prev) => {
+      if (!prev[field]) return prev
+      const next = { ...prev }
+      delete next[field]
+      return next
+    })
+  }
+
   // Auto-advance when ?role=business is in the URL
   useEffect(() => {
     if (searchParams.get('role') === 'business') {
@@ -70,6 +111,8 @@ function RegisterContent() {
   // Shared input class
   const inputCls =
     'h-10 rounded-lg border border-border bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 w-full'
+  const errCls =
+    'border-red-400 bg-red-50/40 focus:border-red-500 focus:ring-red-400/20'
 
   return (
     <div className="min-h-screen bg-secondary/40 py-10 px-4">
@@ -306,7 +349,9 @@ function RegisterContent() {
                       type="text"
                       autoComplete="given-name"
                       placeholder={t('Jan', 'Иван')}
-                      className={inputCls}
+                      value={fname}
+                      onChange={(e) => { setFname(e.target.value); clearError('fname') }}
+                      className={cn(inputCls, errors.fname && errCls)}
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
@@ -319,7 +364,9 @@ function RegisterContent() {
                       type="text"
                       autoComplete="family-name"
                       placeholder={t('Kowalski', 'Иванов')}
-                      className={inputCls}
+                      value={lname}
+                      onChange={(e) => { setLname(e.target.value); clearError('lname') }}
+                      className={cn(inputCls, errors.lname && errCls)}
                     />
                   </div>
                 </div>
@@ -337,7 +384,9 @@ function RegisterContent() {
                         id="company"
                         type="text"
                         placeholder={t('np. Kowalski Budownictwo Sp. z o.o.', 'напр. Иванов Строй ООО')}
-                        className={inputCls}
+                        value={company}
+                        onChange={(e) => { setCompany(e.target.value); clearError('company') }}
+                        className={cn(inputCls, errors.company && errCls)}
                       />
                     </div>
 
@@ -353,7 +402,9 @@ function RegisterContent() {
                         inputMode="numeric"
                         maxLength={10}
                         placeholder="0000000000"
-                        className={inputCls}
+                        value={nip}
+                        onChange={(e) => { setNip(e.target.value); clearError('nip') }}
+                        className={cn(inputCls, errors.nip && errCls)}
                       />
                       <p className="text-xs text-muted-foreground">
                         {t('10 cyfr, bez myślników', '10 цифр, без дефисов')}
@@ -375,7 +426,9 @@ function RegisterContent() {
                           type="text"
                           autoComplete="street-address"
                           placeholder={t('ul. Budowlana 12/3', 'ул. Строительная 12/3')}
-                          className={inputCls}
+                          value={street}
+                          onChange={(e) => { setStreet(e.target.value); clearError('street') }}
+                          className={cn(inputCls, errors.street && errCls)}
                         />
                       </div>
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -389,7 +442,9 @@ function RegisterContent() {
                             type="text"
                             placeholder="00-000"
                             maxLength={6}
-                            className={inputCls}
+                            value={postcode}
+                            onChange={(e) => { setPostcode(e.target.value); clearError('postcode') }}
+                            className={cn(inputCls, errors.postcode && errCls)}
                           />
                         </div>
                         <div className="flex flex-col gap-1.5">
@@ -402,7 +457,9 @@ function RegisterContent() {
                             type="text"
                             autoComplete="address-level2"
                             placeholder={t('Warszawa', 'Варшава')}
-                            className={inputCls}
+                            value={city}
+                            onChange={(e) => { setCity(e.target.value); clearError('city') }}
+                            className={cn(inputCls, errors.city && errCls)}
                           />
                         </div>
                       </div>
@@ -422,7 +479,9 @@ function RegisterContent() {
                       type="email"
                       autoComplete="email"
                       placeholder="jan.kowalski@example.com"
-                      className={inputCls}
+                      value={email}
+                      onChange={(e) => { setEmail(e.target.value); clearError('email') }}
+                      className={cn(inputCls, errors.email && errCls)}
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
@@ -451,7 +510,9 @@ function RegisterContent() {
                       type={showPass ? 'text' : 'password'}
                       autoComplete="new-password"
                       placeholder={t('Min. 8 znaków', 'Мин. 8 символов')}
-                      className={cn(inputCls, 'pr-10')}
+                      value={password}
+                      onChange={(e) => { setPassword(e.target.value); clearError('password') }}
+                      className={cn(inputCls, 'pr-10', errors.password && errCls)}
                     />
                     <button
                       type="button"
@@ -470,10 +531,13 @@ function RegisterContent() {
                     <input
                       type="checkbox"
                       checked={agreeTerms}
-                      onChange={(e) => setAgreeTerms(e.target.checked)}
-                      className="mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-brand"
+                      onChange={(e) => { setAgreeTerms(e.target.checked); clearError('terms') }}
+                      className={cn(
+                        'mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-brand',
+                        errors.terms && 'outline outline-2 outline-offset-1 outline-red-400',
+                      )}
                     />
-                    <span className="text-sm text-muted-foreground">
+                    <span className={cn('text-sm text-muted-foreground', errors.terms && 'text-red-500/80')}>
                       {lang === 'pl' ? (
                         <>
                           Akceptuję{' '}
@@ -522,9 +586,9 @@ function RegisterContent() {
 
                 {/* Submit */}
                 <button
-                  type="submit"
-                  disabled={!agreeTerms}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-brand text-sm font-semibold text-brand-foreground shadow-sm transition-colors hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  type="button"
+                  onClick={() => validate()}
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-brand text-sm font-semibold text-brand-foreground shadow-sm transition-colors hover:bg-brand/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {isCompany
                     ? t('Zarejestruj firmę', 'Зарегистрировать компанию')
@@ -581,6 +645,7 @@ function RegisterContent() {
 
                     <button
                       type="button"
+                      onClick={() => validate()}
                       className="mt-5 flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-brand text-sm font-semibold text-brand-foreground shadow-sm transition-colors hover:bg-brand/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {t('Zarejestruj się i odbierz 14 dni za darmo', 'Зарегистрируйтесь и получите 14 дней бесплатно')}
