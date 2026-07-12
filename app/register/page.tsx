@@ -287,6 +287,10 @@ function RegisterContent() {
                 <p className="mt-1.5 text-sm text-muted-foreground">
                   {t('Wypełnij poniższe pola, aby rozpocząć.', 'Заполните поля ниже, чтобы начать.')}
                 </p>
+                <p className="mt-2 text-xs text-gray-400">
+                  <span className="text-orange-500">*</span>{' '}
+                  {t('Pola obowiązkowe', 'Обязательные поля')}
+                </p>
               </div>
 
               <form className="flex flex-col gap-5" onSubmit={(e) => e.preventDefault()}>
@@ -295,6 +299,7 @@ function RegisterContent() {
                   <div className="flex flex-col gap-1.5">
                     <label htmlFor="fname" className="text-sm font-medium text-foreground">
                       {t('Imię', 'Имя')}
+                      <span className="ml-1 text-orange-500">*</span>
                     </label>
                     <input
                       id="fname"
@@ -307,6 +312,7 @@ function RegisterContent() {
                   <div className="flex flex-col gap-1.5">
                     <label htmlFor="lname" className="text-sm font-medium text-foreground">
                       {t('Nazwisko', 'Фамилия')}
+                      {isCompany && <span className="ml-1 text-orange-500">*</span>}
                     </label>
                     <input
                       id="lname"
@@ -325,6 +331,7 @@ function RegisterContent() {
                     <div className="flex flex-col gap-1.5">
                       <label htmlFor="company" className="text-sm font-medium text-foreground">
                         {t('Nazwa firmy', 'Название компании')}
+                        <span className="ml-1 text-orange-500">*</span>
                       </label>
                       <input
                         id="company"
@@ -338,7 +345,7 @@ function RegisterContent() {
                     <div className="flex flex-col gap-1.5">
                       <label htmlFor="nip" className="text-sm font-medium text-foreground">
                         {t('NIP (Numer Identyfikacji Podatkowej)', 'NIP (Налоговый идентификационный номер)')}
-                        <span className="ml-1 text-brand">*</span>
+                        <span className="ml-1 text-orange-500">*</span>
                       </label>
                       <input
                         id="nip"
@@ -361,6 +368,7 @@ function RegisterContent() {
                       <div className="flex flex-col gap-1.5">
                         <label htmlFor="street" className="text-sm font-medium text-foreground">
                           {t('Ulica, nr domu', 'Улица, номер дома')}
+                          <span className="ml-1 text-orange-500">*</span>
                         </label>
                         <input
                           id="street"
@@ -374,6 +382,7 @@ function RegisterContent() {
                         <div className="flex flex-col gap-1.5">
                           <label htmlFor="postcode" className="text-sm font-medium text-foreground">
                             {t('Kod pocztowy', 'Почтовый индекс')}
+                            <span className="ml-1 text-orange-500">*</span>
                           </label>
                           <input
                             id="postcode"
@@ -386,6 +395,7 @@ function RegisterContent() {
                         <div className="flex flex-col gap-1.5">
                           <label htmlFor="city" className="text-sm font-medium text-foreground">
                             {t('Miejscowość', 'Населённый пункт')}
+                            <span className="ml-1 text-orange-500">*</span>
                           </label>
                           <input
                             id="city"
@@ -405,6 +415,7 @@ function RegisterContent() {
                   <div className="flex flex-col gap-1.5">
                     <label htmlFor="reg-email" className="text-sm font-medium text-foreground">
                       {t('Adres e-mail', 'Адрес e-mail')}
+                      <span className="ml-1 text-orange-500">*</span>
                     </label>
                     <input
                       id="reg-email"
@@ -432,6 +443,7 @@ function RegisterContent() {
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="reg-password" className="text-sm font-medium text-foreground">
                     {t('Hasło', 'Пароль')}
+                    <span className="ml-1 text-orange-500">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -472,6 +484,7 @@ function RegisterContent() {
                           <Link href="/privacy" className="font-medium text-brand hover:underline">
                             Politykę Prywatności
                           </Link>
+                          <span className="ml-1 text-orange-500">*</span>
                         </>
                       ) : (
                         <>
@@ -483,6 +496,7 @@ function RegisterContent() {
                           <Link href="/privacy" className="font-medium text-brand hover:underline">
                             Политику конфиденциальности
                           </Link>
+                          <span className="ml-1 text-orange-500">*</span>
                         </>
                       )}
                     </span>
