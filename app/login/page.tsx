@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Eye, EyeOff, HardHat, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, HardHat, ArrowRight, Loader2 } from 'lucide-react'
 import { useLang } from '@/lib/lang-context'
 import { cn } from '@/lib/utils'
 
@@ -11,6 +11,23 @@ function LoginContent() {
   const [showPass, setShowPass] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setError(null)
+
+    if (password.length < 6) {
+      setError(t('Nieprawidłowy e-mail lub hasło.', 'Неверный e-mail или пароль.'))
+      return
+    }
+
+    setIsLoading(true)
+    await new Promise<void>((resolve) => setTimeout(resolve, 2000))
+    setIsLoading(false)
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-white px-4 py-12">
@@ -66,7 +83,18 @@ function LoginContent() {
             </p>
           </div>
 
-          <form className="flex flex-col gap-5" onSubmit={(e) => e.preventDefault()}>
+          <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+            {/* Error banner */}
+            {error && (
+              <div
+                role="alert"
+                className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-600"
+              >
+                <span className="mt-px shrink-0">&#x26A0;</span>
+                <span>{error}</span>
+              </div>
+            )}
+
             {/* Email */}
             <div className="flex flex-col gap-1.5">
               <label htmlFor="email" className="text-sm font-medium text-foreground">
@@ -79,7 +107,8 @@ function LoginContent() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="jan.kowalski@example.com"
-                className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
+                disabled={isLoading}
+                className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -104,7 +133,8 @@ function LoginContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="h-10 w-full rounded-lg border border-border bg-background px-3 pr-10 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
+                  disabled={isLoading}
+                  className="h-10 w-full rounded-lg border border-border bg-background px-3 pr-10 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="button"
@@ -121,7 +151,10 @@ function LoginContent() {
             <label className="flex cursor-pointer items-center gap-2.5">
               <input
                 type="checkbox"
-                className="h-4 w-4 rounded border-border accent-brand"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                disabled={isLoading}
+                className="h-4 w-4 rounded border-border accent-brand disabled:cursor-not-allowed"
               />
               <span className="text-sm text-muted-foreground">
                 {t('Zapamiętaj mnie', 'Запомнить меня')}
@@ -131,10 +164,13 @@ function LoginContent() {
             {/* Submit */}
             <button
               type="submit"
-              className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand text-sm font-semibold text-brand-foreground shadow-sm transition-colors hover:bg-brand/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              disabled={isLoading}
+              className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand text-sm font-semibold text-brand-foreground shadow-sm transition-colors hover:bg-brand/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {t('Zaloguj się', 'Войти')}
-              <ArrowRight className="h-4 w-4" />
+              {isLoading
+                ? <Loader2 className="h-4 w-4 animate-spin" />
+                : <ArrowRight className="h-4 w-4" />}
             </button>
 
             {/* Divider */}
@@ -149,7 +185,8 @@ function LoginContent() {
             {/* Google OAuth */}
             <button
               type="button"
-              className="flex h-10 w-full items-center justify-center gap-2.5 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              disabled={isLoading}
+              className="flex h-10 w-full items-center justify-center gap-2.5 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -163,7 +200,8 @@ function LoginContent() {
             {/* Facebook OAuth */}
             <button
               type="button"
-              className="flex h-10 w-full items-center justify-center gap-2.5 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              disabled={isLoading}
+              className="flex h-10 w-full items-center justify-center gap-2.5 rounded-lg border border-border bg-card text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="#1877F2">
                 <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047v-2.66c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.883v2.27h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
