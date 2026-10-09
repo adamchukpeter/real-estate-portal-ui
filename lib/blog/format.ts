@@ -5,8 +5,21 @@ const dateFormatter = new Intl.DateTimeFormat('pl-PL', {
   timeZone: 'Europe/Warsaw',
 })
 
+const dateTimeFormatter = new Intl.DateTimeFormat('pl-PL', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  timeZone: 'Europe/Warsaw',
+})
+
 export function formatPolishDate(iso: string): string {
   return dateFormatter.format(new Date(iso))
+}
+
+export function formatPolishDateTime(iso: string): string {
+  return dateTimeFormatter.format(new Date(iso))
 }
 
 /** True when the article was meaningfully edited after publication (more than a day later). */

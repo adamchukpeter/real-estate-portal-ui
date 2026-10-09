@@ -18,12 +18,8 @@ interface BlogListingViewProps {
   hasError?: boolean
   retryHref: string
   hrefForPage: (page: number) => string
-  /** Search/filter form, rendered between the header and the results. */
-  filters?: React.ReactNode
-  /** Contextual category navigation, rendered between the header and the results. */
+  /** Contextual category navigation, rendered inside the intro band. */
   categoryNav?: React.ReactNode
-  /** Highlight the first card. Only meaningful on an unfiltered first page. */
-  featuredFirst?: boolean
   empty: { title: string; description: string; action?: { label: string; href: string } }
 }
 
@@ -36,36 +32,31 @@ export function BlogListingView({
   hasError = false,
   retryHref,
   hrefForPage,
-  filters,
   categoryNav,
-  featuredFirst = false,
   empty,
 }: BlogListingViewProps) {
   return (
     <BlogShell>
-      <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
-        <Breadcrumbs items={breadcrumbs} className="pt-5" />
-        <BlogListingHeader eyebrow={eyebrow} title={title} description={description} />
+      <section className="border-b border-border bg-secondary/40">
+        <div className="mx-auto max-w-7xl px-4 pb-6 pt-4 sm:px-6 md:pb-8">
+          <Breadcrumbs items={breadcrumbs} />
+          <BlogListingHeader eyebrow={eyebrow} title={title} description={description} />
+          {categoryNav}
+        </div>
+      </section>
 
-        {categoryNav && <div className="mb-8">{categoryNav}</div>}
-        {filters}
-
+      <section className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 md:pt-10">
         {hasError || !result ? (
           <ErrorState retryHref={retryHref} />
         ) : result.items.length === 0 ? (
           <EmptyState {...empty} />
         ) : (
           <>
-            <p role="status" className="mb-4 text-sm text-muted-foreground">
-              {pluralizeArticles(result.total)}
+            <p className="mb-5 text-sm text-muted-foreground">
+              <span className="font-semibold text-foreground">{pluralizeArticles(result.total)}</span>
               {result.totalPages > 1 && ` · strona ${result.page} z ${result.totalPages}`}
             </p>
-            <ArticleGrid
-              articles={result.items}
-              titleAs="h2"
-              featuredFirst={featuredFirst}
-              priorityFirst
-            />
+            <ArticleGrid articles={result.items} titleAs="h2" priorityFirst />
             <BlogPagination
               page={result.page}
               totalPages={result.totalPages}
@@ -74,7 +65,7 @@ export function BlogListingView({
             />
           </>
         )}
-      </div>
+      </section>
     </BlogShell>
   )
 }

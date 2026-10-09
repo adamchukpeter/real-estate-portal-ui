@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { focusRing } from '@/lib/blog/styles'
 import { ArticleByline } from '@/components/blog/article-byline'
 import type { ArticleSummaryV2 } from '@/lib/blog/types'
 
@@ -10,59 +12,38 @@ export type ArticleCardTitleTag = 'h2' | 'h3' | 'h4' | 'p'
 interface ArticleCardProps {
   article: ArticleSummaryV2
   titleAs?: ArticleCardTitleTag
-  variant?: 'default' | 'featured'
   priority?: boolean
 }
 
-export function ArticleCard({
-  article,
-  titleAs = 'h2',
-  variant = 'default',
-  priority = false,
-}: ArticleCardProps) {
+export function ArticleCard({ article, titleAs = 'h2', priority = false }: ArticleCardProps) {
   const Title = titleAs
-  const featured = variant === 'featured'
   const { cover } = article
 
   return (
-    <article
-      className={cn(
-        'group relative flex w-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md',
-        featured && 'lg:flex-row',
-      )}
-    >
-      {cover && (
-        <div
-          className={cn(
-            'relative aspect-[16/9] w-full shrink-0 overflow-hidden bg-muted',
-            featured && 'lg:w-3/5',
-          )}
-        >
+    <article className="group relative flex w-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md">
+      {cover ? (
+        <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-muted">
           <Image
             src={cover.url}
             alt={cover.alt}
             fill
             priority={priority}
-            sizes={
-              featured
-                ? '(min-width: 1280px) 720px, (min-width: 1024px) 60vw, 100vw'
-                : '(min-width: 1024px) 384px, (min-width: 640px) 50vw, 100vw'
-            }
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            sizes="(min-width: 1280px) 384px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
+      ) : (
+        <div aria-hidden="true" className="h-1.5 w-full shrink-0 bg-brand/70" />
       )}
 
-      <div
-        className={cn(
-          'flex min-w-0 flex-1 flex-col p-5',
-          featured && 'lg:justify-center lg:p-8',
-        )}
-      >
+      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
         <div>
           <Link
             href={article.category.pathAlias}
-            className="relative z-10 inline-flex max-w-full rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-foreground transition-colors hover:bg-brand/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className={cn(
+              'relative z-10 inline-flex max-w-full rounded-full bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand-strong transition-colors hover:bg-brand/20',
+              focusRing,
+            )}
           >
             <span className="truncate">{article.category.name}</span>
           </Link>
@@ -71,12 +52,12 @@ export function ArticleCard({
         <Title
           className={cn(
             'mt-3 font-heading font-bold leading-snug tracking-tight text-foreground text-pretty break-words',
-            featured ? 'text-xl sm:text-2xl lg:text-3xl' : cover ? 'text-lg' : 'text-xl',
+            cover ? 'text-lg' : 'text-xl',
           )}
         >
           <Link
             href={article.pathAlias}
-            className="rounded-sm transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-brand focus-visible:outline-none focus-visible:after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-ring"
+            className="rounded-sm transition-colors after:absolute after:inset-0 after:content-[''] group-hover:text-brand-strong focus-visible:outline-none focus-visible:after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-ring"
           >
             {article.title}
           </Link>
@@ -85,18 +66,19 @@ export function ArticleCard({
         <p
           className={cn(
             'mt-2 text-sm leading-relaxed text-muted-foreground',
-            cover ? 'line-clamp-3' : 'line-clamp-5',
-            featured && 'lg:line-clamp-4 lg:text-base',
+            cover ? 'line-clamp-3' : 'line-clamp-6',
           )}
         >
           {article.excerpt}
         </p>
 
-        <ArticleByline
-          author={article.author}
-          publishedAt={article.publishedAt}
-          className="mt-auto border-t border-border pt-4 [&:not(:first-child)]:mt-5"
-        />
+        <div className="mt-auto flex items-center justify-between gap-3 border-t border-border pt-3 [&:not(:first-child)]:mt-4">
+          <ArticleByline author={article.author} publishedAt={article.publishedAt} className="min-w-0" />
+          <ArrowRight
+            aria-hidden="true"
+            className="h-4 w-4 shrink-0 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-brand-strong"
+          />
+        </div>
       </div>
     </article>
   )

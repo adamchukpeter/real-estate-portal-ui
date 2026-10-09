@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { focusRing } from '@/lib/blog/styles'
 
 interface BlogPaginationProps {
   page: number
@@ -24,8 +25,14 @@ function visiblePages(page: number, totalPages: number): PageItem[] {
   return items
 }
 
-const itemBase =
-  'inline-flex h-10 min-w-10 items-center justify-center rounded-lg border px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+const itemBase = cn(
+  'inline-flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-lg border px-3.5 text-sm font-semibold transition-colors',
+  focusRing,
+)
+const itemLink =
+  'border-border bg-card text-foreground hover:border-brand hover:bg-brand/5 hover:text-brand-strong'
+const itemCurrent = 'border-brand-strong bg-brand-strong text-brand-foreground'
+const itemDisabled = 'cursor-not-allowed border-border bg-secondary/60 text-muted-foreground/60'
 
 export function BlogPagination({ page, totalPages, hrefForPage, className }: BlogPaginationProps) {
   if (totalPages <= 1) return null
@@ -35,23 +42,16 @@ export function BlogPagination({ page, totalPages, hrefForPage, className }: Blo
 
   return (
     <nav aria-label="Paginacja artykułów" className={className}>
-      <ul className="flex items-center justify-center gap-1.5">
+      <ul className="flex items-center justify-between gap-2 sm:justify-center">
         <li>
           {hasPrev ? (
-            <Link
-              href={hrefForPage(page - 1)}
-              rel="prev"
-              className={cn(itemBase, 'gap-1 border-border bg-card text-foreground hover:border-graphite')}
-            >
+            <Link href={hrefForPage(page - 1)} rel="prev" className={cn(itemBase, itemLink)}>
               <ChevronLeft aria-hidden="true" className="h-4 w-4" />
               <span className="hidden sm:inline">Poprzednia</span>
               <span className="sr-only sm:hidden">Poprzednia strona</span>
             </Link>
           ) : (
-            <span
-              aria-disabled="true"
-              className={cn(itemBase, 'cursor-not-allowed gap-1 border-border bg-card text-muted-foreground/50')}
-            >
+            <span aria-disabled="true" className={cn(itemBase, itemDisabled)}>
               <ChevronLeft aria-hidden="true" className="h-4 w-4" />
               <span className="hidden sm:inline">Poprzednia</span>
               <span className="sr-only sm:hidden">Poprzednia strona (niedostępna)</span>
@@ -59,8 +59,8 @@ export function BlogPagination({ page, totalPages, hrefForPage, className }: Blo
           )}
         </li>
 
-        <li className="px-3 text-sm text-muted-foreground sm:hidden" aria-hidden="true">
-          {page} / {totalPages}
+        <li className="text-sm font-medium text-muted-foreground sm:hidden">
+          Strona <span className="font-bold text-foreground">{page}</span> z {totalPages}
         </li>
 
         {visiblePages(page, totalPages).map((item) =>
@@ -74,16 +74,12 @@ export function BlogPagination({ page, totalPages, hrefForPage, className }: Blo
                 <span
                   aria-current="page"
                   aria-label={`Strona ${item}, bieżąca`}
-                  className={cn(itemBase, 'border-graphite bg-graphite text-graphite-foreground')}
+                  className={cn(itemBase, itemCurrent)}
                 >
                   {item}
                 </span>
               ) : (
-                <Link
-                  href={hrefForPage(item)}
-                  aria-label={`Strona ${item}`}
-                  className={cn(itemBase, 'border-border bg-card text-foreground hover:border-graphite')}
-                >
+                <Link href={hrefForPage(item)} aria-label={`Strona ${item}`} className={cn(itemBase, itemLink)}>
                   {item}
                 </Link>
               )}
@@ -93,20 +89,13 @@ export function BlogPagination({ page, totalPages, hrefForPage, className }: Blo
 
         <li>
           {hasNext ? (
-            <Link
-              href={hrefForPage(page + 1)}
-              rel="next"
-              className={cn(itemBase, 'gap-1 border-border bg-card text-foreground hover:border-graphite')}
-            >
+            <Link href={hrefForPage(page + 1)} rel="next" className={cn(itemBase, itemLink)}>
               <span className="hidden sm:inline">Następna</span>
               <span className="sr-only sm:hidden">Następna strona</span>
               <ChevronRight aria-hidden="true" className="h-4 w-4" />
             </Link>
           ) : (
-            <span
-              aria-disabled="true"
-              className={cn(itemBase, 'cursor-not-allowed gap-1 border-border bg-card text-muted-foreground/50')}
-            >
+            <span aria-disabled="true" className={cn(itemBase, itemDisabled)}>
               <span className="hidden sm:inline">Następna</span>
               <span className="sr-only sm:hidden">Następna strona (niedostępna)</span>
               <ChevronRight aria-hidden="true" className="h-4 w-4" />

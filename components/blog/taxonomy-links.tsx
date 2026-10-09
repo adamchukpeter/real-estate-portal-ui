@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { focusRing } from '@/lib/blog/styles'
 import type { ArticleTaxonomyTerm } from '@/lib/blog/types'
 
 interface TaxonomyLinksProps {
@@ -20,11 +21,12 @@ export function TaxonomyLinks({ terms, label, className }: TaxonomyLinksProps) {
             <Link
               href={term.pathAlias}
               className={cn(
-                'inline-flex max-w-full items-center rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors',
-                'hover:border-graphite hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                'inline-flex min-h-9 max-w-full items-center rounded-full border border-border bg-secondary/60 px-3.5 py-1.5 text-sm font-medium text-foreground/80 transition-colors',
+                'hover:border-brand hover:bg-brand/10 hover:text-foreground',
+                focusRing,
               )}
             >
-              <span className="truncate">{term.name}</span>
+              <span className="min-w-0 break-words">{term.name}</span>
             </Link>
           </li>
         ))}

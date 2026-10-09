@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { ArticleComments } from '@/components/blog/article-comments'
 import { ArticleDetailView } from '@/components/blog/article-detail-view'
+import { ArticleVote } from '@/components/blog/article-vote'
+import { MOCK_COMMENTS, MOCK_VOTE_SCORE } from '@/lib/blog/mock-engagement'
 import { getMockArticleByAlias, getMockRelated } from '@/lib/blog/mock-data'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -32,6 +35,8 @@ export default async function BlogArticlePage({ params }: Props) {
     <ArticleDetailView
       article={article}
       related={getMockRelated(article)}
+      vote={<ArticleVote initialScore={MOCK_VOTE_SCORE} />}
+      comments={<ArticleComments comments={MOCK_COMMENTS} viewer="guest" />}
       breadcrumbs={[
         { label: 'Strona główna', href: '/' },
         { label: 'Blog', href: '/blog' },
